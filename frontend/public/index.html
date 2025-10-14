@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orkestra - Hayat ve Uygulama Yönetim Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 text-white p-6 hidden md:block">
+            <div class="flex items-center space-x-3 mb-10">
+                <i class="fas fa-music text-3xl"></i>
+                <h1 class="text-2xl font-bold">Orkestra</h1>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="#" class="nav-item active flex items-center space-x-3 p-3 rounded-lg" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Ana Sayfa</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="applications">
+                    <i class="fas fa-th-large"></i>
+                    <span>Uygulamalarım</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="lifelogs">
+                    <i class="fas fa-camera"></i>
+                    <span>Hayat Kayıtları</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="finance">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Finans</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="routines">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Rutinler</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="ai">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Asistan</span>
+                </a>
+                <a href="#" class="nav-item flex items-center space-x-3 p-3 rounded-lg" data-page="automation">
+                    <i class="fas fa-cog"></i>
+                    <span>Otomasyon</span>
+                </a>
+            </nav>
+
+            <div class="absolute bottom-6 left-6 right-6">
+                <div class="p-4 bg-white bg-opacity-10 rounded-lg">
+                    <p class="text-sm font-semibold">Claude AI</p>
+                    <p class="text-xs opacity-75">Aktif ve Hazır</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+            <div id="content-area" class="fade-in">
+                <!-- Content will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
