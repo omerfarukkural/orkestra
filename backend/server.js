@@ -121,9 +121,14 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
-// Serve frontend for all other routes
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/public', 'index.html'));
+// Serve frontend - must be last route
+app.use((req, res, next) => {
+  // If no route matched and it's not an API call, serve index.html
+  if (!req.path.startsWith('/api') && !req.path.startsWith('/auth') && !req.path.startsWith('/uploads')) {
+    res.sendFile(path.join(__dirname, '../frontend/public', 'index.html'));
+  } else {
+    next();
+  }
 });
 
 // Error handling
