@@ -61,7 +61,7 @@ app.use('/api/', limiter);
 
 // Static files
 app.use('/uploads', express.static('uploads'));
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 // Routes
 app.use('/auth', authRoutes);
@@ -121,9 +121,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
-// Serve frontend
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+// Serve frontend for all other routes
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public', 'index.html'));
 });
 
 // Error handling
