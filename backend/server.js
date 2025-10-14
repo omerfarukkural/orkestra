@@ -20,6 +20,7 @@ const transactionRoutes = require('./routes/transactions');
 const routineRoutes = require('./routes/routines');
 const aiRoutes = require('./routes/ai');
 const syncRoutes = require('./routes/sync');
+const monitoringRoutes = require('./routes/monitoring');
 
 const app = express();
 
@@ -71,6 +72,7 @@ app.use('/api/transactions', isAuthenticated, transactionRoutes);
 app.use('/api/routines', isAuthenticated, routineRoutes);
 app.use('/api/ai', isAuthenticated, aiRoutes);
 app.use('/api/sync', isAuthenticated, syncRoutes);
+app.use('/api/monitoring', monitoringRoutes); // Public monitoring endpoints
 
 // Dashboard data endpoint
 app.get('/api/dashboard', isAuthenticated, async (req, res) => {
