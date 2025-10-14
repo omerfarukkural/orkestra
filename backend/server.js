@@ -22,6 +22,7 @@ const aiRoutes = require('./routes/ai');
 const syncRoutes = require('./routes/sync');
 const monitoringRoutes = require('./routes/monitoring');
 const pushbulletRoutes = require('./routes/pushbullet');
+const infrastructureRoutes = require('./routes/infrastructure');
 
 const app = express();
 
@@ -75,6 +76,7 @@ app.use('/api/ai', isAuthenticated, aiRoutes);
 app.use('/api/sync', isAuthenticated, syncRoutes);
 app.use('/api/monitoring', monitoringRoutes); // Public monitoring endpoints
 app.use('/api/pushbullet', pushbulletRoutes); // Pushbullet integration
+app.use('/api/infrastructure', infrastructureRoutes); // Hetzner & cPanel management
 
 // Dashboard data endpoint
 app.get('/api/dashboard', isAuthenticated, async (req, res) => {
