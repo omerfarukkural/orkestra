@@ -1,0 +1,66 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "Orkestra-arm64-apple-macosx15.0-release.exe": ["<Orkestra-arm64-apple-macosx15.0-release.exe>"]
+  "Orkestra-arm64-apple-macosx15.0-release.module": ["<Orkestra-arm64-apple-macosx15.0-release.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<Orkestra-arm64-apple-macosx15.0-release.exe>","<Orkestra-arm64-apple-macosx15.0-release.module>"]
+  "test": ["<Orkestra-arm64-apple-macosx15.0-release.exe>","<Orkestra-arm64-apple-macosx15.0-release.module>"]
+default: "main"
+nodes:
+  "/Users/omerfarukkural/orkestra/macos/Sources/Orkestra/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/omerfarukkural/orkestra/macos/Sources/Orkestra/main.swift"]
+    outputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/sources"]
+    description: "Write auxiliary file /Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/sources"
+
+  "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main.swift.o"]
+    outputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.product/Objects.LinkFileList"
+
+  "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"
+
+  "<Orkestra-arm64-apple-macosx15.0-release.exe>":
+    tool: phony
+    inputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra"]
+    outputs: ["<Orkestra-arm64-apple-macosx15.0-release.exe>"]
+
+  "<Orkestra-arm64-apple-macosx15.0-release.module>":
+    tool: phony
+    inputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main.swift.o","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Modules/Orkestra.swiftmodule"]
+    outputs: ["<Orkestra-arm64-apple-macosx15.0-release.module>"]
+
+  "C.Orkestra-arm64-apple-macosx15.0-release.exe":
+    tool: shell
+    inputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main.swift.o","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.product/Objects.LinkFileList"]
+    outputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra"]
+    description: "Linking ./.build/arm64-apple-macosx/release/Orkestra"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release","-o","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra","-module-name","Orkestra","-Xlinker","-no_warn_duplicate_libraries","-emit-executable","-Xlinker","-dead_strip","-Xlinker","-alias","-Xlinker","_Orkestra_main","-Xlinker","_main","-Xlinker","-rpath","-Xlinker","@loader_path","@/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.product/Objects.LinkFileList","-target","arm64-apple-macosx13.0","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g"]
+
+  "C.Orkestra-arm64-apple-macosx15.0-release.module":
+    tool: shell
+    inputs: ["/Users/omerfarukkural/orkestra/macos/Sources/Orkestra/main.swift","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/sources"]
+    outputs: ["/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main.swift.o","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Modules/Orkestra.swiftmodule"]
+    description: "Compiling Swift Module 'Orkestra' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","Orkestra","-emit-dependencies","-emit-module","-emit-module-path","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Modules/Orkestra.swiftmodule","-output-file-map","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/output-file-map.json","-whole-module-optimization","-num-threads","12","-c","@/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/sources","-I","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Modules","-target","arm64-apple-macosx13.0","-whole-module-optimization","-num-threads","12","-serialize-diagnostics","-O","-j12","-DSWIFT_PACKAGE","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/ModuleCache","-parseable-output","-Xfrontend","-entry-point-function-name","-Xfrontend","Orkestra_main","-parse-as-library","-color-diagnostics","-swift-version","5","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","macos"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/omerfarukkural/orkestra/macos/Sources/Orkestra/","/Users/omerfarukkural/orkestra/macos/Package.swift","/Users/omerfarukkural/orkestra/macos/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

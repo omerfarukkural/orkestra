@@ -534,3 +534,267 @@ function viewApp(id) {
 function editApp(id) {
     alert(`Uygulama düzenleme: ${id} - geliştirme aşamasında`);
 }
+
+// Pushbullet Page
+function loadPushbullet() {
+    const content = `
+        <div class="space-y-6">
+            <div class="glass p-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold gradient-text">Pushbullet File Transfer</h2>
+                    <p class="text-gray-600">Dosyalarınızı telefonunuza gönderin</p>
+                </div>
+                <button onclick="refreshDevices()" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                    <i class="fas fa-sync mr-2"></i> Cihazları Yenile
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass p-6">
+                    <h3 class="text-xl font-bold mb-4">Dosya Gönder</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Cihaz Seç</label>
+                            <select id="device-select" class="w-full px-4 py-2 border rounded-lg">
+                                <option value="">Tüm Cihazlar</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Dosya Seç</label>
+                            <input type="file" id="file-input" class="w-full px-4 py-2 border rounded-lg" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Başlık (İsteğe Bağlı)</label>
+                            <input type="text" id="file-title" placeholder="Dosya başlığı" class="w-full px-4 py-2 border rounded-lg" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Açıklama (İsteğe Bağlı)</label>
+                            <textarea id="file-body" placeholder="Dosya açıklaması" rows="2" class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+
+                        <button onclick="sendFile()" class="w-full px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <i class="fas fa-paper-plane mr-2"></i> Dosya Gönder
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass p-6">
+                    <h3 class="text-xl font-bold mb-4">Hızlı Gönder</h3>
+                    <div class="space-y-3">
+                        <button onclick="sendOrkestraApp('apk')" class="w-full p-4 bg-green-100 hover:bg-green-200 rounded-lg transition text-left">
+                            <i class="fas fa-mobile-alt text-2xl text-green-600 mb-2"></i>
+                            <p class="font-semibold">Orkestra Android APK</p>
+                            <p class="text-sm text-gray-600">Android uygulamasını telefonunuza gönderin</p>
+                        </button>
+
+                        <button onclick="sendNote()" class="w-full p-4 bg-blue-100 hover:bg-blue-200 rounded-lg transition text-left">
+                            <i class="fas fa-sticky-note text-2xl text-blue-600 mb-2"></i>
+                            <p class="font-semibold">Not Gönder</p>
+                            <p class="text-sm text-gray-600">Hızlı not gönderin</p>
+                        </button>
+
+                        <button onclick="sendLink()" class="w-full p-4 bg-orange-100 hover:bg-orange-200 rounded-lg transition text-left">
+                            <i class="fas fa-link text-2xl text-orange-600 mb-2"></i>
+                            <p class="font-semibold">Link Gönder</p>
+                            <p class="text-sm text-gray-600">Orkestra linkini paylaşın</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-6">
+                <h3 class="text-xl font-bold mb-4">Bağlı Cihazlar</h3>
+                <div id="devices-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <p class="text-gray-500">Yükleniyor...</p>
+                </div>
+            </div>
+
+            <div class="glass p-6">
+                <h3 class="text-xl font-bold mb-4">Son Gönderiler</h3>
+                <div id="pushes-list" class="space-y-2">
+                    <p class="text-gray-500">Yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('content-area').innerHTML = content;
+    loadPushbulletData();
+}
+
+async function loadPushbulletData() {
+    await Promise.all([
+        loadDevices(),
+        loadPushes()
+    ]);
+}
+
+async function loadDevices() {
+    try {
+        const response = await axios.get(`${API_BASE}/pushbullet/devices`);
+        const devices = response.data.devices || [];
+
+        const select = document.getElementById('device-select');
+        devices.forEach(device => {
+            if (device.active) {
+                const option = document.createElement('option');
+                option.value = device.iden;
+                option.textContent = `${device.nickname || device.model || 'Unknown Device'}`;
+                select.appendChild(option);
+            }
+        });
+
+        const devicesHtml = devices.filter(d => d.active).map(device => `
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <i class="fas fa-${device.type === 'android' ? 'mobile-alt' : device.type === 'ios' ? 'mobile' : 'desktop'} text-3xl text-purple-500 mb-2"></i>
+                <p class="font-semibold">${device.nickname || device.model || 'Unknown'}</p>
+                <p class="text-xs text-gray-500">${device.manufacturer || ''}</p>
+            </div>
+        `).join('');
+
+        document.getElementById('devices-list').innerHTML = devicesHtml || '<p class="text-gray-500">Cihaz bulunamadı</p>';
+    } catch (error) {
+        console.error('Load devices error:', error);
+        document.getElementById('devices-list').innerHTML = '<p class="text-red-500">Cihazlar yüklenemedi</p>';
+    }
+}
+
+async function loadPushes() {
+    try {
+        const response = await axios.get(`${API_BASE}/pushbullet/pushes?limit=5`);
+        const pushes = response.data.pushes || [];
+
+        const pushesHtml = pushes.map(push => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-${push.type === 'file' ? 'file' : push.type === 'link' ? 'link' : 'sticky-note'} text-purple-500"></i>
+                    <div>
+                        <p class="font-semibold">${push.title || 'No title'}</p>
+                        <p class="text-xs text-gray-600">${new Date(push.created * 1000).toLocaleString('tr-TR')}</p>
+                    </div>
+                </div>
+                <button onclick="deletePush('${push.iden}')" class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `).join('');
+
+        document.getElementById('pushes-list').innerHTML = pushesHtml || '<p class="text-gray-500">Henüz gönderim yok</p>';
+    } catch (error) {
+        console.error('Load pushes error:', error);
+    }
+}
+
+async function sendFile() {
+    const fileInput = document.getElementById('file-input');
+    const deviceSelect = document.getElementById('device-select');
+    const title = document.getElementById('file-title').value;
+    const body = document.getElementById('file-body').value;
+
+    if (!fileInput.files || !fileInput.files[0]) {
+        alert('Lütfen bir dosya seçin');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    formData.append('title', title);
+    formData.append('body', body);
+    if (deviceSelect.value) {
+        formData.append('device_iden', deviceSelect.value);
+    }
+
+    try {
+        const response = await axios.post(`${API_BASE}/pushbullet/file`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        alert('Dosya başarıyla gönderildi!');
+        fileInput.value = '';
+        document.getElementById('file-title').value = '';
+        document.getElementById('file-body').value = '';
+        loadPushes();
+    } catch (error) {
+        alert('Dosya gönderilirken hata oluştu: ' + error.message);
+    }
+}
+
+async function sendOrkestraApp(type = 'apk') {
+    const deviceSelect = document.getElementById('device-select');
+
+    if (confirm('Orkestra uygulamasını telefonunuza göndermek istiyor musunuz?')) {
+        try {
+            const response = await axios.post(`${API_BASE}/pushbullet/send-app`, {
+                device_iden: deviceSelect.value || null,
+                file_type: type
+            });
+
+            alert('Uygulama başarıyla gönderildi! Telefonunuzda Pushbullet bildirimini kontrol edin.');
+            loadPushes();
+        } catch (error) {
+            alert('Uygulama gönderilirken hata oluştu: ' + error.message);
+        }
+    }
+}
+
+async function sendNote() {
+    const title = prompt('Not başlığı:');
+    if (!title) return;
+
+    const body = prompt('Not içeriği:');
+    if (!body) return;
+
+    const deviceSelect = document.getElementById('device-select');
+
+    try {
+        await axios.post(`${API_BASE}/pushbullet/note`, {
+            title,
+            body,
+            device_iden: deviceSelect.value || null
+        });
+
+        alert('Not başarıyla gönderildi!');
+        loadPushes();
+    } catch (error) {
+        alert('Not gönderilirken hata oluştu: ' + error.message);
+    }
+}
+
+async function sendLink() {
+    const deviceSelect = document.getElementById('device-select');
+
+    try {
+        await axios.post(`${API_BASE}/pushbullet/link`, {
+            title: 'Orkestra - Hayat Yönetim Sistemi',
+            url: 'http://orkestra.bitebimuv.org',
+            body: 'Orkestra uygulamasını keşfedin!',
+            device_iden: deviceSelect.value || null
+        });
+
+        alert('Link başarıyla gönderildi!');
+        loadPushes();
+    } catch (error) {
+        alert('Link gönderilirken hata oluştu: ' + error.message);
+    }
+}
+
+async function deletePush(iden) {
+    if (confirm('Bu gönderiyi silmek istediğinizden emin misiniz?')) {
+        try {
+            await axios.delete(`${API_BASE}/pushbullet/pushes/${iden}`);
+            loadPushes();
+        } catch (error) {
+            alert('Silme işlemi başarısız: ' + error.message);
+        }
+    }
+}
+
+async function refreshDevices() {
+    await loadDevices();
+    alert('Cihazlar yenilendi!');
+}

@@ -21,6 +21,7 @@ const routineRoutes = require('./routes/routines');
 const aiRoutes = require('./routes/ai');
 const syncRoutes = require('./routes/sync');
 const monitoringRoutes = require('./routes/monitoring');
+const pushbulletRoutes = require('./routes/pushbullet');
 
 const app = express();
 
@@ -73,6 +74,7 @@ app.use('/api/routines', isAuthenticated, routineRoutes);
 app.use('/api/ai', isAuthenticated, aiRoutes);
 app.use('/api/sync', isAuthenticated, syncRoutes);
 app.use('/api/monitoring', monitoringRoutes); // Public monitoring endpoints
+app.use('/api/pushbullet', pushbulletRoutes); // Pushbullet integration
 
 // Dashboard data endpoint
 app.get('/api/dashboard', isAuthenticated, async (req, res) => {

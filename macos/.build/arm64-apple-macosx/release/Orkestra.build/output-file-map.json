@@ -1,0 +1,13 @@
+{
+  "": {
+    "dependencies": "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/Orkestra.d",
+    "object": "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/Orkestra.o",
+    "swift-dependencies": "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/master.swiftdeps"
+  },
+  "/Users/omerfarukkural/orkestra/macos/Sources/Orkestra/main.swift": {
+    "object": "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main.swift.o",
+    "swiftmodule": "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main.swiftdeps",
+    "diagnostics": "/Users/omerfarukkural/orkestra/macos/.build/arm64-apple-macosx/release/Orkestra.build/main.dia"
+  }
+}
