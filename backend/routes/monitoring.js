@@ -42,4 +42,24 @@ router.post('/services/:name/restart', async (req, res) => {
   }
 });
 
+// Stop service
+router.post('/services/:name/stop', async (req, res) => {
+  try {
+    const result = await healthMonitor.stopService(req.params.name);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Start service
+router.post('/services/:name/start', async (req, res) => {
+  try {
+    const result = await healthMonitor.startService(req.params.name);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

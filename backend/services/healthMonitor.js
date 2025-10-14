@@ -87,14 +87,75 @@ class HealthMonitorService {
   }
 
   async restartService(serviceName) {
-    // This would require PM2 API or system commands
-    // For now, return instruction
-    return {
-      service: serviceName,
-      action: 'restart',
-      command: `pm2 restart ${serviceName}`,
-      note: 'Execute this command on the server'
-    };
+    const { exec } = require('child_process');
+    const util = require('util');
+    const execPromise = util.promisify(exec);
+
+    try {
+      const { stdout, stderr } = await execPromise(`pm2 restart ${serviceName}`);
+      return {
+        service: serviceName,
+        action: 'restart',
+        success: true,
+        output: stdout,
+        error: stderr
+      };
+    } catch (error) {
+      return {
+        service: serviceName,
+        action: 'restart',
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  async stopService(serviceName) {
+    const { exec } = require('child_process');
+    const util = require('util');
+    const execPromise = util.promisify(exec);
+
+    try {
+      const { stdout, stderr } = await execPromise(`pm2 stop ${serviceName}`);
+      return {
+        service: serviceName,
+        action: 'stop',
+        success: true,
+        output: stdout,
+        error: stderr
+      };
+    } catch (error) {
+      return {
+        service: serviceName,
+        action: 'stop',
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  async startService(serviceName) {
+    const { exec } = require('child_process');
+    const util = require('util');
+    const execPromise = util.promisify(exec);
+
+    try {
+      const { stdout, stderr } = await execPromise(`pm2 start ${serviceName}`);
+      return {
+        service: serviceName,
+        action: 'start',
+        success: true,
+        output: stdout,
+        error: stderr
+      };
+    } catch (error) {
+      return {
+        service: serviceName,
+        action: 'start',
+        success: false,
+        error: error.message
+      };
+    }
   }
 
   async getSystemStatus() {
