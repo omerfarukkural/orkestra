@@ -627,7 +627,7 @@ function renderDomainCard(domain) {
                     <p class="text-sm text-gray-600">${domain.provider} · ${domain.purpose}</p>
                 </div>
                 ${domain.url ? `
-                    <a href="${domain.url}" target="_blank" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition">
+                    <a href="${domain.url}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition">
                         <i class="fas fa-external-link-alt mr-1"></i> Aç
                     </a>
                 ` : ''}
