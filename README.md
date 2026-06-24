@@ -11,6 +11,7 @@ Orkestra, tüm hayatınızı, uygulamalarınızı, gelir/giderlerinizi, günlük
 - **Rutin Yönetimi**: Günlük rutinlerinizi oluşturun ve takip edin
 - **AI Asistan**: Claude AI ile kod oluşturun, analiz yapın
 - **Otomasyon**: Tekrarlayan işlerinizi otomatikleştirin
+- **Platform Orkestrası Paneli**: AI sağlayıcıları, araçlar, domain/DNS envanteri ve yayın görevlerini tek ekranda yönetin
 
 ### 🤖 AI Entegrasyonları
 - **Claude AI**: Kod üretimi, analiz ve sohbet
