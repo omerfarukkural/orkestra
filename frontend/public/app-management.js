@@ -191,7 +191,7 @@ const ORCHESTRA_DOMAIN_INVENTORY = [
     },
     {
         domain: 'mutluet.org',
-        provider: 'Squarescape',
+        provider: 'Squarespace',
         purpose: 'Dernek',
         records: ['A 103.169.142.0'],
         subdomains: [],
