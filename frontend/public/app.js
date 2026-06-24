@@ -75,8 +75,14 @@ function loadPage(page) {
             case 'ai':
                 loadAI();
                 break;
+            case 'orchestra':
+                loadOrchestraPanel();
+                break;
             case 'automation':
                 loadAutomation();
+                break;
+            case 'pushbullet':
+                loadPushbullet();
                 break;
         }
         contentArea.classList.add('fade-in');

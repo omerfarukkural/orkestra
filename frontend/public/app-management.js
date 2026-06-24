@@ -134,6 +134,88 @@ const APP_SERVICES = [
     }
 ];
 
+const ORCHESTRA_PLATFORM_SECTIONS = [
+    {
+        title: 'AI ve Model Katmanı',
+        icon: 'fa-brain',
+        color: 'purple',
+        items: [
+            { name: 'Claude', detail: 'Sonnet 4.6 (Önerilen ana model)', tag: 'Primary' },
+            { name: 'Gemini', detail: 'Alternatif büyük model', tag: 'Fallback' },
+            { name: 'Perplexity', detail: 'Canlı web araştırması', tag: 'Research' },
+            { name: 'GitHub Copilot Pro', detail: 'Kod üretimi ve IDE akışı', tag: 'Dev' },
+            { name: 'Ollama', detail: 'Yerel model çalıştırma', tag: 'Local' }
+        ]
+    },
+    {
+        title: 'Günlük Operasyon ve Üretim',
+        icon: 'fa-briefcase',
+        color: 'blue',
+        items: [
+            { name: 'Slack', detail: 'Ekip iletişimi', tag: 'Comm' },
+            { name: 'Monday', detail: 'Görev takibi', tag: 'PM' },
+            { name: 'IntelliJ IDEA', detail: 'Ana IDE', tag: 'IDE' },
+            { name: 'Xcode + Copilot for Xcode', detail: 'iOS geliştirme', tag: 'IDE' },
+            { name: 'Figma + Canva + CapCut', detail: 'Tasarım ve içerik üretimi', tag: 'Creative' },
+            { name: 'Docker', detail: 'Konteyner orkestrasyonu', tag: 'Infra' },
+            { name: 'Google Business Plus + GCP', detail: 'İşletme ve bulut altyapısı', tag: 'Cloud' },
+            { name: 'Vercel + Clerk + Heroku', detail: 'Dağıtım ve kimlik katmanı', tag: 'Deploy' },
+            { name: 'Datadog', detail: 'Gözlemlenebilirlik', tag: 'Observability' },
+            { name: '1Password + Termius + Tower', detail: 'Güvenlik ve erişim', tag: 'Ops' },
+            { name: 'Polypane + HazeOver + SQLGate', detail: 'UI/DB üretkenliği', tag: 'Tooling' },
+            { name: 'Bootstrap + Lambda + Antigravity', detail: 'UI + serverless + yardımcı araçlar', tag: 'Stack' }
+        ]
+    },
+    {
+        title: 'Editör Stratejisi',
+        icon: 'fa-code',
+        color: 'indigo',
+        items: [
+            { name: 'Cursor', detail: 'Tut (Copilot olmayan deneysel işlerde)', tag: 'Keep' },
+            { name: 'OpenCode', detail: 'Karar netleşene kadar dondur; kullanım yoksa kaldır', tag: 'Optional' }
+        ]
+    }
+];
+
+const ORCHESTRA_DOMAIN_INVENTORY = [
+    {
+        domain: 'bitebimuv.org',
+        provider: 'Turhost',
+        purpose: 'Dernek',
+        records: ['A 94.199.201.3'],
+        subdomains: [
+            { host: 'n8n.bitebimuv.org', purpose: 'Otomasyon', record: 'A 34.141.16.229' },
+            { host: 'app.bitebimuv.org', purpose: 'Uygulama', record: 'A 34.141.16.229' }
+        ],
+        url: 'https://bitebimuv.org'
+    },
+    {
+        domain: 'mutluet.org',
+        provider: 'Squarescape',
+        purpose: 'Dernek',
+        records: ['A 103.169.142.0'],
+        subdomains: [],
+        url: 'https://mutluet.org'
+    },
+    {
+        domain: 'bitir.me',
+        provider: 'NameCheap',
+        purpose: 'Öğrenci / GitHub Education',
+        records: ['A 185.199.108.153'],
+        subdomains: [],
+        url: 'https://bitir.me'
+    }
+];
+
+const ORCHESTRA_PUBLISHING_TASKS = [
+    {
+        title: 'nefes-islamic-mindfulness yayını',
+        target: 'nefes.bitebimuv.org',
+        source: 'GitHub repo: nefes-islamic-mindfulness',
+        status: 'Planlandı'
+    }
+];
+
 // Load enhanced dashboard
 async function loadEnhancedDashboard() {
     const content = `
@@ -457,6 +539,113 @@ function updateApp(appId) {
 function refreshAllServices() {
     showNotification('info', 'Tüm servisler yenileniyor...');
     loadServiceStatuses();
+}
+
+function loadOrchestraPanel() {
+    const content = `
+        <div class="space-y-6">
+            <div class="glass p-6">
+                <h2 class="text-3xl font-bold gradient-text mb-2">Platform Orkestrası</h2>
+                <p class="text-gray-600">Araçlar, AI modelleri, alan adları ve yayın görevleri tek panelde</p>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                ${ORCHESTRA_PLATFORM_SECTIONS.map(renderPlatformSection).join('')}
+            </div>
+
+            <div class="glass p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Alan Adı ve DNS Envanteri</h3>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">${ORCHESTRA_DOMAIN_INVENTORY.length} domain</span>
+                </div>
+                <div class="space-y-4">
+                    ${ORCHESTRA_DOMAIN_INVENTORY.map(renderDomainCard).join('')}
+                </div>
+            </div>
+
+            <div class="glass p-6">
+                <h3 class="text-xl font-bold mb-4">Yayın Görevleri</h3>
+                <div class="space-y-3">
+                    ${ORCHESTRA_PUBLISHING_TASKS.map(task => `
+                        <div class="p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <p class="font-semibold text-emerald-900">${task.title}</p>
+                                    <p class="text-sm text-emerald-800 mt-1">${task.source}</p>
+                                    <p class="text-sm text-emerald-800">Hedef: <span class="font-semibold">${task.target}</span></p>
+                                </div>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">${task.status}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('content-area').innerHTML = content;
+}
+
+function renderPlatformSection(section) {
+    const colorClass = {
+        purple: 'text-purple-600 bg-purple-50',
+        blue: 'text-blue-600 bg-blue-50',
+        indigo: 'text-indigo-600 bg-indigo-50'
+    }[section.color] || 'text-gray-600 bg-gray-50';
+
+    return `
+        <div class="glass p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold">${section.title}</h3>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold ${colorClass}">
+                    <i class="fas ${section.icon} mr-1"></i>${section.items.length}
+                </span>
+            </div>
+            <div class="space-y-3">
+                ${section.items.map(item => `
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="font-semibold text-gray-900">${item.name}</p>
+                                <p class="text-sm text-gray-600">${item.detail}</p>
+                            </div>
+                            <span class="px-2 py-1 text-xs bg-white border border-gray-200 rounded">${item.tag}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function renderDomainCard(domain) {
+    return `
+        <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
+                <div>
+                    <p class="font-semibold text-gray-900">${domain.domain}</p>
+                    <p class="text-sm text-gray-600">${domain.provider} · ${domain.purpose}</p>
+                </div>
+                ${domain.url ? `
+                    <a href="${domain.url}" target="_blank" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition">
+                        <i class="fas fa-external-link-alt mr-1"></i> Aç
+                    </a>
+                ` : ''}
+            </div>
+            <p class="text-sm text-gray-700 mb-2"><span class="font-semibold">DNS:</span> ${domain.records.join(', ')}</p>
+            ${domain.subdomains.length > 0 ? `
+                <div class="space-y-2">
+                    ${domain.subdomains.map(sub => `
+                        <div class="p-3 bg-white rounded border border-gray-100 text-sm">
+                            <p class="font-semibold text-gray-900">${sub.host}</p>
+                            <p class="text-gray-600">${sub.purpose}</p>
+                            <p class="text-gray-700">${sub.record}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
 }
 
 function showNotification(type, message) {
